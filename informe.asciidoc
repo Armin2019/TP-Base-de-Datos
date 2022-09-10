@@ -1,0 +1,64 @@
+= Bases de datos I: Trabajo Práctico
+
+Armin Choqueticlla <arminchdiaz1987@gmail.com>; 
+
+Cristian Correa <crisignaciocorrea97@gmail.com>;
+
+Emanuel Elgani <emanuelelgani@gmail.com>; 
+
+Ignacio Moyano <ignaciomoyanosm@gmail.com>.
+
+v4, {docdate}. 
+
+*Docentes*: Hernán Rondelli y Hernán Czemerinski.
+
+:title-page:
+:numbered:
+:source-highlighter: coderay
+:tabsize: 4
+
+== Introducción
+
+En este trabajo se implementa la teoría vista en la materia referente al modelado de bases de datos, tanto relacionales como no relacionales, aplicada al manejo de tarjetas de crédito. Para la parte relacional se utiliza SQL con PostgreSQL (trabajándose con PL/pgSQL para la lógica dentro de la base de datos). Para el modelado no relacional, se utiliza una base de datos NoSQL basada en JSON (implementada con BoltDB). Todo el código de ambos modelos se ejecuta desde una aplicación CLI escrita en Go.
+
+Parte relacional:
+
+De acuerdo al modelo de datos presente en el enunciado, se pide crear la base de datos, agregar las claves correspondientes y cargar registros de veinte clientes, veinte comercios y veintidós tarjetas. Luego, aplicando lo visto de Stored Procedures y Triggers, se pide crear funciones para autorizar compras según corresponda, generar un resumen de un cliente dado y crear alertas por posibles fraudes.
+
+Parte no relacional:
+
+Con la idea de comparar este modelo con el anterior, se pide guardar los datos de tres clientes, tres tarjetas, tres comercios y tres compras, realizado desde Go en una base de datos NoSQL basada en JSON.
+
+== Descripción
+
+En un principio se trabajó con SQL puro, para crear las tablas y agregar las filas. De esta manera fue más fácil cerciorarse de que el código funcionaba. Luego, siguiendo los ejemplos de las diapositivas, se implementó lo mismo pero con Go.
+
+Trabajar con Go, lenguaje nuevo para el grupo, no presentó grandes dificultades. Las dudas y problemas fueron fácilmente resueltos con la documentación disponible.
+
+_Algunos problemas y decisiones tomadas_: 
+
+Para algunas tablas (compra, rechazo, cabecera, detalle y alerta) se necesitaba el incremento automático de un valor. Para lograr esto, se decidió utilizar serial. 
+
+Surgieron dificultades al registrarse una alerta de compra en un minuto y cinco minutos. Se requería un número de rechazo, pero no era posible obtenerlo antes de generar la alerta, por lo que, luego de consultar con los docentes, se convino en asignarle el valor null. Así, se evitó que el programa produjera un error.
+
+Hubo también complicaciones para comparar las compras realizadas el mismo día con un minuto de diferencia. En un principio no se tenía una idea clara de cómo comparar los valores, que eran de distinto tipo. Al final, esto se solucionó casteando los valores a enteros, para lo que hizo falta investigar un poco sobre PL/pgSQL.
+
+== Implementación
+
+.Código parte relacional
+[source, Go]
+----
+include::tp.go[]
+----
+
+.Código parte no relacional
+[source, Go]
+----
+include::db-No-sql/app-boltdb.go[]
+----
+
+== Conclusiones
+
+Fue interesante trabajar con lenguajes desconocidos. Demuestra que si se tienen los fundamentos de la programación, trabajar con distintos lenguajes es más cuestión de sintaxis y de investigación. En un principio puede abrumar la idea, pero cuando se piensa en qué hacer para resolver un problema y cómo hacerlo, resulta ser cuestión de buscar la información necesaria para escribir aquello que se pensó.
+
+Por otro lado, aplicar la teoría a situaciones prácticas ayudó a afianzar ciertos conceptos y a re-aprender otros. Dejó de ser un misterio, por ejemplo, cómo se hace para acceder a la base de datos o cómo poder introducir lógica en ese conjunto de datos para hacer algo con ellos.
